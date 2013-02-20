@@ -30,9 +30,9 @@ int bmp085_start_measure(struct bmp085 *bmp085, uint8_t measure)
 int bmp085_read_measurement(struct bmp085 *bmp085, uint16_t *measurement)
 {
     int32_t result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_MEASURE_ADDRESS)) < 0)
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_MEASURE_ADDRESS)) < 0)
         return result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_MEASURE_ADDRESS)) < 0)
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_MEASURE_ADDRESS)) < 0)
         return result;
     *measurement = (uint16_t)(result & 0x0000ffff);
     return 0;
@@ -40,17 +40,17 @@ int bmp085_read_measurement(struct bmp085 *bmp085, uint16_t *measurement)
 
 int bmp085_measure_pressure(struct bmp085 *bmp085, uint32_t *pressure, uint8_t oss)
 {
-    if(oss > 3)
+    if (oss > 3)
         return -EINVAL;
 
     int32_t result;
-    if(result = bmp085_start_measure(bmp085, BMP085_PRESSURE_MEASURE + (oss << 6)))
+    if (result = bmp085_start_measure(bmp085, BMP085_PRESSURE_MEASURE + (oss << 6)))
         return result;
 
-    delayMS((3 << oss) + 2);
+    delay_ms((3 << oss) + 2);
 
     uint16_t up;
-    if(result = bmp085_read_measurement(bmp085, &up))
+    if (result = bmp085_read_measurement(bmp085, &up))
         return result;
     *pressure = (up << 8) >> (8 - oss);
     return 0;
@@ -59,12 +59,12 @@ int bmp085_measure_pressure(struct bmp085 *bmp085, uint32_t *pressure, uint8_t o
 int bmp085_measure_temperature(struct bmp085 *bmp085, uint16_t *temperature)
 {
     int32_t result;
-    if(result = bmp085_start_measure(bmp085, BMP085_TEMPERATURE_MEASURE))
+    if (result = bmp085_start_measure(bmp085, BMP085_TEMPERATURE_MEASURE))
         return result;
 
-    delayMS(5);
+    delay_ms(5);
 
-    if(result = bmp085_read_measurement(bmp085, temperature))
+    if (result = bmp085_read_measurement(bmp085, temperature))
         return result;
 
     return 0;
@@ -74,38 +74,38 @@ int bmp085_read_coefficients(struct bmp085 *bmp085)
 {
     int32_t result;
 
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC1_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC1_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.ac1 = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC2_ADDRESS)) < 0)
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC2_ADDRESS)) < 0)
         return result;
     bmp085->coefficients.ac2 = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC3_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC3_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.ac3 = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC4_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC4_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.ac4 = (uint16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC5_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC5_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.ac5 = (uint16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC6_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_AC6_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.ac6 = (uint16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_B1_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_B1_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.b1 = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_B2_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_B2_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.b2 = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MB_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MB_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.mb = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MC_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MC_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.mc = (int16_t)result;
-    if((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MD_ADDRESS)) < 0)
-            return result;
+    if ((result = i2c_read_word_data(&bmp085->client, BMP085_EE_MD_ADDRESS)) < 0)
+        return result;
     bmp085->coefficients.md = (int16_t)result;
 
     return 0;
@@ -129,7 +129,7 @@ void bmp085_calc(struct bmp085_coefficients * c, uint32_t up, uint16_t ut, uint3
     x1 = c->ac3 * b6 >> 13;
     x2 = (c->b1 * (b6 * b6 >> 12)) >> 16;
     x3 = ((x1 + x2) + 2) >> 2;
-    b4 = (c->ac4 * (uint32_t) (x3 + 32768)) >> 15;
+    b4 = (c->ac4 * (uint32_t)(x3 + 32768)) >> 15;
     b7 = ((uint32_t) up - b3) * (50000 >> oss);
     p = b7 < 0x80000000 ? (b7 * 2) / b4 : (b7 / b4) * 2;
 

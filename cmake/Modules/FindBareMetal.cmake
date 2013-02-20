@@ -3,7 +3,7 @@ IF(NOT BareMetal_PLATFORM)
 ENDIF()
 
 IF(BareMetal_PLATFORM STREQUAL "stm32spl")
-    SET(BareMetal_PLATFORM_COMPONENTS i2c gpio)
+    SET(BareMetal_PLATFORM_COMPONENTS i2c gpio delay)
     IF(STM32_CHIP_TYPE)
         IF(STM32_CHIP_TYPE STREQUAL "HD")
             SET(BareMetal_LIB_SUFFIXIES ${BareMetal_LIB_SUFFIXIES} "stm32spl_hd")

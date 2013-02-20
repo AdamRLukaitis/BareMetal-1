@@ -1,4 +1,4 @@
-#ifndef BAREMETAL_I2C_H 
+#ifndef BAREMETAL_I2C_H
 #define BAREMETAL_I2C_H
 
 #include <stdint.h>
@@ -25,11 +25,11 @@ struct i2c_client
 };
 
 /*! I2C transaction segment beginning with START */
-struct i2c_msg 
+struct i2c_msg
 {
     uint8_t addr;                   /*!< 7-bit client address. In <b>lower</b> bits. */
     uint8_t flags;                  /*!< Message flags. */
-    #define I2C_MSG_READ 0x01       /*!< Indicates that we are reading from client. */
+#define I2C_MSG_READ 0x01       /*!< Indicates that we are reading from client. */
     uint16_t len;                   /*!< Payload length. */
     uint8_t *buf;                   /*!< Message payload. */
 };

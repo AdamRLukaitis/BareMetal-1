@@ -7,14 +7,14 @@
 
 int i2c_stm32spl_WaitForEventTimeout(I2C_TypeDef *I2Cx, uint32_t event, uint16_t mS)
 {
-    uint16_t tickStop = getTickCount() + mS;
+    uint16_t tick_stop = get_tick_count() + mS;
     int state = 0;
-    while (getTickCount() < tickStop)
+    while (get_tick_count() < tick_stop)
     {
         state = I2C_CheckEvent(I2Cx, event);
         if (state)
             break;
-        systemNOP();
+        system_nop();
     }
 
     if (!state)
@@ -54,7 +54,7 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
                 if (j == msgs[i].len - 1)
                 {
                     I2C_AcknowledgeConfig(I2CDevice, DISABLE);
-                    if(i == num - 1)
+                    if (i == num - 1)
                         I2C_GenerateSTOP(I2CDevice, ENABLE);
                 }
                 BM_TIMEOUT_WAIT_MS(I2C_GetFlagStatus(I2CDevice, I2C_FLAG_RXNE) == RESET, adap->timeout)
@@ -62,7 +62,7 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
                     I2C_GenerateSTOP(I2CDevice, ENABLE);
                     return -ETIMEDOUT;
                 }
-                if(j == msgs[i].len - 1)
+                if (j == msgs[i].len - 1)
                 {
                     I2C_AcknowledgeConfig(I2CDevice, ENABLE);
                 }
@@ -79,7 +79,7 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
                     I2C_GenerateSTOP(I2CDevice, ENABLE);
                     return -ETIMEDOUT;
                 }
-                if((i == num - 1) && (j == msgs[i].len - 1))
+                if ((i == num - 1) && (j == msgs[i].len - 1))
                     I2C_GenerateSTOP(I2CDevice, ENABLE);
             }
         }

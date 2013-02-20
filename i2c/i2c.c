@@ -1,4 +1,4 @@
-#include "bm/i2c.h" 
+#include "bm/i2c.h"
 #include <errno.h>
 
 //#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
@@ -11,12 +11,13 @@
 
 int i2c_action(const struct i2c_client *client, uint8_t command, char read, int size, uint8_t *values)
 {
-    if(size < 0 || size > I2C_MAX_BLOCK_SIZE)
+    if (size < 0 || size > I2C_MAX_BLOCK_SIZE)
         return -EINVAL;
-    
+
     uint8_t msgbuf[size + 1];
 
-    struct i2c_msg msg[2] = {
+    struct i2c_msg msg[2] =
+    {
         {
             .addr = client->addr,
             .flags = 0,
@@ -30,27 +31,27 @@ int i2c_action(const struct i2c_client *client, uint8_t command, char read, int 
             .buf = values,
         }
     };
-    
+
     int msg_num = read ? 2 : 1;
-    
-    if(!read)
+
+    if (!read)
     {
         msgbuf[0] = command;
         int i;
-        for(i = 0; i < size; i++)
+        for (i = 0; i < size; i++)
         {
             msgbuf[i + 1] = values[i];
         }
     }
-    
-    if(size == 0 && read)
+
+    if (size == 0 && read)
     {
         msg[0].flags = I2C_MSG_READ;
         msg[0].len = 1;
         msg[0].buf = values;
         msg_num = 1;
     }
-    
+
     return i2c_transfer(client->adapter, msg, msg_num);
 }
 

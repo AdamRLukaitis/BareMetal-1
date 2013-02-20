@@ -1,10 +1,10 @@
-#ifndef BAREMETAL_BMP085_H 
+#ifndef BAREMETAL_BMP085_H
 #define BAREMETAL_BMP085_H
 
 /*!
  * \defgroup drivers Drivers - Device drivers
  * \{
- * \defgroup bmp085 BMP085 - BMP085 Pressure/Temperature sensor.
+ * \defgroup bmp085 BMP085 - Pressure/Temperature sensor.
  * \{
  */
 
