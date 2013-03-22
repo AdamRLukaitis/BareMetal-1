@@ -127,7 +127,7 @@ int spi_sync(struct spi_client *client, struct spi_message *messages, int num)
         else
             gpio_set_value(client->chip_select, 0);
     }
-    for (int i = 0; i <= num; i++)
+    for (int i = 0; i < num; i++)
     {
         if (messages[i].speed || messages[i].bits_per_word)
             return -ENOTSUP;

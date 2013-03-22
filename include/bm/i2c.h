@@ -9,7 +9,7 @@
  * \{
  */
 
-/*! i2c_adapter Represent an I2C master adapter */
+/*! Represent an I2C master adapter */
 struct i2c_adapter
 {
     uint32_t speed;      /*!< Adapter speed in Hz.  */

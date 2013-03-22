@@ -1,13 +1,13 @@
 #include "bm/i2c.h"
 #include <errno.h>
 
-//#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-//#define be_to_cpu16(x)
-//#define cpu_to_be16(x)
-//#else
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define be_to_cpu16(x)
+#define cpu_to_be16(x)
+#else
 #define be_to_cpu16(x) (x = ((x & 0xff00) >> 8) | ((x & 0xff) << 8))
 #define cpu_to_be16(x) (x = ((x & 0xff00) >> 8) | ((x & 0xff) << 8))
-//#endif
+#endif
 
 int i2c_action(const struct i2c_client *client, uint8_t command, char read, int size, uint8_t *values)
 {
