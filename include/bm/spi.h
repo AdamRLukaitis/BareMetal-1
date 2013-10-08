@@ -1,6 +1,8 @@
 #ifndef BAREMETAL_SPI_H
 #define BAREMETAL_SPI_H
 
+#include <stdint.h>
+
 #include "gpio.h"
 
 /*! \defgroup spi SPI - Serial Peripheral Interface bus support
@@ -30,6 +32,8 @@ struct spi_master
 
     uint8_t bits_per_word;                         /*!< Number of bits in SPI word */
     uint32_t speed;                                /*!< Adapter speed */
+
+    void *impl;                                    /*!< Implementation-specific data. */
 };
 
 /*! Represent an SPI slave device */
@@ -51,9 +55,7 @@ struct spi_message
 
     uint16_t len;                                  /*!< Buffers size */
     uint8_t cs_change;                             /*!< Toggle CS after message */
-    uint8_t bits_per_word;                         /*!< Number of bits in SPI word, 0 means adapter's default */
     uint16_t delay_usecs;                          /*!< Delay for microseconds after message */
-    uint32_t speed;                                /*!< Adapter speed, 0 means adapter's default */
 };
 
 /*! Init SPI adapter.

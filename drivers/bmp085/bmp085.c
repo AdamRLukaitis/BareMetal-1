@@ -44,13 +44,13 @@ int bmp085_measure_pressure(struct bmp085 *bmp085, uint32_t *pressure, uint8_t o
         return -EINVAL;
 
     int32_t result;
-    if (result = bmp085_start_measure(bmp085, BMP085_PRESSURE_MEASURE + (oss << 6)))
+    if ((result = bmp085_start_measure(bmp085, BMP085_PRESSURE_MEASURE + (oss << 6))) != 0)
         return result;
 
     delay_ms((3 << oss) + 2);
 
     uint16_t up;
-    if (result = bmp085_read_measurement(bmp085, &up))
+    if ((result = bmp085_read_measurement(bmp085, &up)) != 0)
         return result;
     *pressure = (up << 8) >> (8 - oss);
     return 0;
@@ -59,12 +59,12 @@ int bmp085_measure_pressure(struct bmp085 *bmp085, uint32_t *pressure, uint8_t o
 int bmp085_measure_temperature(struct bmp085 *bmp085, uint16_t *temperature)
 {
     int32_t result;
-    if (result = bmp085_start_measure(bmp085, BMP085_TEMPERATURE_MEASURE))
+    if ((result = bmp085_start_measure(bmp085, BMP085_TEMPERATURE_MEASURE)) != 0)
         return result;
 
     delay_ms(5);
 
-    if (result = bmp085_read_measurement(bmp085, temperature))
+    if ((result = bmp085_read_measurement(bmp085, temperature)) != 0)
         return result;
 
     return 0;
@@ -137,31 +137,5 @@ void bmp085_calc(struct bmp085_coefficients * c, uint32_t up, uint16_t ut, uint3
     x1 = (x1 * 3038) >> 16;
     x2 = (-7357 * p) >> 16;
     *pressure = p + ((x1 + x2 + 3791) >> 4);
-    /*int32_t  x1, x2, x3, b3, b5, b6, p;
-    uint32_t  b4, b7;
-    uint8_t oss = 3;
-
-    x1 = ((ut - c->ac6) * c->ac5) / (1 << 15);
-    x2 = (((int32_t) c->mc) << 11) / (x1 + c->md);
-    b5 = x1 + x2;
-    *temperature = (b5 + 8) / (1 << 4);
-
-    b6 = b5 - 4000;
-    x1 = (c->b2 * ((b6 * b6) / (1 << 12))) / (1 << 11);
-    x2 = (c->ac2 * b6) / (1 << 11);
-    x3 = x1 + x2;
-    b3 = ((((int32_t) c->ac1 * 4 + x3) << oss) + 2) / (1 << 2);
-    x1 = (c->ac3 * b6) / (1 << 13);
-    x2 = (c->b1 * (b6 * b6 / (1 << 12))) / (1 << 16);
-    x3 = ((x1 + x2) + 2) / (1 << 2);
-    b4 = (c->ac4 * (uint32_t) (x3 + 32768)) / (1 << 15);
-    b7 = ((uint32_t) up - b3) * (50000 >> oss);
-    p = b7 < 0x80000000 ? (b7 * 2) / b4 : (b7 / b4) * 2;
-
-    x1 = (p / (1 << 8)) * (p / (1 << 8));
-    x1 = (x1 * 3038) / (1 << 16);
-    x2 = (-7357 * p) / (1 << 16);
-
-    *pressure = p + ((x1 + x2 + 3791) / (1 << 4));*/
 }
 

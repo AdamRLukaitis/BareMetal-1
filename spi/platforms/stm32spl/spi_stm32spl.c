@@ -25,6 +25,7 @@ int spi_init(struct spi_master *master)
         return -EINVAL;
         break;
     }
+    master->impl = device;
 
     if (master->mode & SPI_3WIRE)
         return -ENOTSUP;
@@ -96,22 +97,7 @@ int spi_init(struct spi_master *master)
 
 int spi_sync(struct spi_client *client, struct spi_message *messages, int num)
 {
-    SPI_TypeDef *device = 0;
-    switch (client->master->bus_num)
-    {
-    case 1:
-        device = SPI1;
-        break;
-    case 2:
-        device = SPI2;
-        break;
-    case 3:
-        device = SPI3;
-        break;
-    default:
-        return -EINVAL;
-        break;
-    }
+    SPI_TypeDef *device = client->master->impl;
 
     uint8_t size = 0;
 
@@ -129,9 +115,6 @@ int spi_sync(struct spi_client *client, struct spi_message *messages, int num)
     }
     for (int i = 0; i < num; i++)
     {
-        if (messages[i].speed || messages[i].bits_per_word)
-            return -ENOTSUP;
-
         for (int j = 0; j < messages[i].len; j++)
         {
             if (messages[i].tx_buf)
@@ -174,23 +157,8 @@ int spi_sync(struct spi_client *client, struct spi_message *messages, int num)
 
 int spi_deinit(struct spi_master *master)
 {
-    SPI_TypeDef *device = 0;
-    switch (master->bus_num)
-    {
-    case 1:
-        device = SPI1;
-        break;
-    case 2:
-        device = SPI2;
-        break;
-    case 3:
-        device = SPI3;
-        break;
-    default:
-        return -EINVAL;
-        break;
-    }
-
+    SPI_TypeDef *device = master->impl;
     SPI_Cmd(device, DISABLE);
+    master->impl = 0;
     return 0;
 }

@@ -27,7 +27,7 @@ int i2c_stm32spl_WaitForEventTimeout(I2C_TypeDef *I2Cx, uint32_t event, uint16_t
 
 int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 {
-    I2C_TypeDef *I2CDevice = (I2C_TypeDef *)adap->impl_data;
+    I2C_TypeDef *I2CDevice = (I2C_TypeDef *)adap->impl;
 
     BM_INIT_TIMEOUT_WAIT();
 
@@ -90,7 +90,21 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 
 int i2c_init_adapter(struct i2c_adapter *adap)
 {
-    I2C_TypeDef *I2CDevice = (I2C_TypeDef *)adap->impl_data;
+    I2C_TypeDef *I2CDevice = 0;
+
+    switch (adap->bus_num)
+    {
+    case 1:
+        I2CDevice = I2C1;
+        break;
+    case 2:
+        I2CDevice = I2C2;
+        break;
+    default:
+        return -EINVAL;
+        break;
+    }
+    adap->impl = I2CDevice;
 
     I2C_InitTypeDef conf;
 
@@ -117,10 +131,12 @@ int i2c_init_adapter(struct i2c_adapter *adap)
 
 int i2c_deinit_adapter(struct i2c_adapter *adap)
 {
-    I2C_TypeDef *I2CDevice = (I2C_TypeDef *)adap->impl_data;
+    I2C_TypeDef *I2CDevice = (I2C_TypeDef *)adap->impl;
 
     I2C_Cmd(I2CDevice, DISABLE);
     I2C_DeInit(I2CDevice);
+
+    adap->impl = 0;
 
     return 0;
 }

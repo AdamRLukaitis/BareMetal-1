@@ -25,18 +25,14 @@ int sst25_read_id(struct sst25 *sst25)
             .rx_buf = 0,
             .len = 1,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         },
         {
             .tx_buf = 0,
             .rx_buf = jedec,
             .len = 3,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         }
     };
 
@@ -62,18 +58,14 @@ int sst25_get_status(struct sst25 *sst25, uint8_t *reg)
             .rx_buf = 0,
             .len = 1,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         },
         {
             .tx_buf = 0,
             .rx_buf = reg,
             .len = 1,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         }
     };
 
@@ -134,9 +126,7 @@ int sst25_erase(struct sst25 *sst25, uint16_t addr, int type)
         .rx_buf = 0,
         .len = (type == SST25_ERASE_CHIP) ? 1 : 4,
         .cs_change = 0,
-        .bits_per_word = 0,
-        .delay_usecs = 0,
-        .speed = 0
+        .delay_usecs = 0
     };
 
     status = spi_sync(&sst25->spi, &message, 1);
@@ -174,18 +164,14 @@ int sst25_read_data(struct sst25 *sst25, uint32_t addr, uint8_t *data, uint16_t 
             .rx_buf = 0,
             .len = 4,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         },
         {
             .tx_buf = 0,
             .rx_buf = data,
             .len = size,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         }
     };
 
@@ -211,9 +197,7 @@ int sst25_write_data(struct sst25 *sst25, uint32_t addr, uint8_t *data, uint16_t
             .rx_buf = 0,
             .len = 5,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         };
         start = 1;
         int status = spi_sync(&sst25->spi, &message, 1);
@@ -233,9 +217,7 @@ int sst25_write_data(struct sst25 *sst25, uint32_t addr, uint8_t *data, uint16_t
         .rx_buf = 0,
         .len = 6,
         .cs_change = 0,
-        .bits_per_word = 0,
-        .delay_usecs = 0,
-        .speed = 0
+        .delay_usecs = 0
     };
     status = spi_sync(&sst25->spi, &message, 1);
     if (status)
@@ -255,9 +237,7 @@ int sst25_write_data(struct sst25 *sst25, uint32_t addr, uint8_t *data, uint16_t
             .rx_buf = 0,
             .len = 3,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         };
         int status = spi_sync(&sst25->spi, &message, 1);
         if (status)
@@ -278,9 +258,7 @@ int sst25_write_data(struct sst25 *sst25, uint32_t addr, uint8_t *data, uint16_t
             .rx_buf = 0,
             .len = 5,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         };
         int status = spi_sync(&sst25->spi, &message, 1);
         if (status)
@@ -303,9 +281,7 @@ int sst25_write_enable(struct sst25 *sst25)
         .rx_buf = 0,
         .len = 1,
         .cs_change = 0,
-        .bits_per_word = 0,
-        .delay_usecs = 0,
-        .speed = 0
+        .delay_usecs = 0
     };
     return spi_sync(&sst25->spi, &message, 1);
 }
@@ -319,9 +295,7 @@ int sst25_write_disable(struct sst25 *sst25)
         .rx_buf = 0,
         .len = 1,
         .cs_change = 0,
-        .bits_per_word = 0,
-        .delay_usecs = 0,
-        .speed = 0
+        .delay_usecs = 0
     };
     return spi_sync(&sst25->spi, &message, 1);
 }
@@ -343,9 +317,7 @@ int sst25_unprotect(struct sst25 *sst25)
         .rx_buf = 0,
         .len = 1,
         .cs_change = 0,
-        .bits_per_word = 0,
-        .delay_usecs = 0,
-        .speed = 0
+        .delay_usecs = 0
     };
     state = spi_sync(&sst25->spi, &message, 1);
     if (state)
@@ -361,18 +333,14 @@ int sst25_unprotect(struct sst25 *sst25)
             .rx_buf = 0,
             .len = 1,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         },
         {
             .tx_buf = 0,
             .rx_buf = &reg,
             .len = 1,
             .cs_change = 0,
-            .bits_per_word = 0,
-            .delay_usecs = 0,
-            .speed = 0
+            .delay_usecs = 0
         }
     };
     state = spi_sync(&sst25->spi, messages, 2);
