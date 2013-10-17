@@ -83,18 +83,6 @@ int spi_init(struct spi_master *master)
     return 0;
 }
 
-/*struct spi_transfer
-{
-    const void *tx_buf;
-    void *rx_buf;
-
-    uint16_t len;
-    uint8_t cs_change;
-    uint8_t bits_per_word;
-    uint16_t delay_usecs;
-    uint32_t speed;
-};*/
-
 int spi_sync(struct spi_client *client, struct spi_message *messages, int num)
 {
     SPI_TypeDef *device = client->master->impl;

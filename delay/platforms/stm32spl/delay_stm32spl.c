@@ -5,8 +5,8 @@
 
 void delay_us(uint16_t uS)
 {
-    uint16_t start = TIM_GetCounter(TIM17);
-    while ((uint16_t)(TIM_GetCounter(TIM17) - start) <= uS) system_nop();
+    uint16_t start = TIM_GetCounter(TIM14);
+    while ((uint16_t)(TIM_GetCounter(TIM14) - start) <= uS) system_nop();
 }
 
 int delay_init()
@@ -17,8 +17,8 @@ int delay_init()
     TIM_TimeBaseStructure.TIM_Period = UINT16_MAX;
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM17, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(TIM14, &TIM_TimeBaseStructure);
 
-    TIM_Cmd(TIM17, ENABLE);
+    TIM_Cmd(TIM14, ENABLE);
     return 0;
 }
