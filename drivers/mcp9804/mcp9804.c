@@ -42,7 +42,9 @@ int mcp9804_read_temperature(struct mcp9804 *mcp9804, float *temperature)
         return result;
 
     uint16_t temp = (uint16_t)result;
-    *temperature = (((temp >> 12) & 0x1) ? -1.0f : 1.0f) * (((float)(temp & 0x7)) / 16.0f + (float)((temp >> 4) & 0xff));
+    *temperature = ((float)(temp & 0xf)) / 16.0f + (float)((temp >> 4) & 0xff);
+    if ((temp >> 12) & 0x1)
+        *temperature = - 256.0f + *temperature;
 
     return 0;
 }

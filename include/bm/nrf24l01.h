@@ -173,7 +173,9 @@ int nrf24l01_enter_standby(struct nrf24l01 *device);
 //! Send data as PTX.
 int nrf24l01_send(struct nrf24l01 *device, uint8_t *data, uint16_t size);
 //! Recieve data.
-int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint8_t *size, uint16_t timeout);
+int nrf24l01_receive_packet(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint8_t *size, uint16_t timeout);
+// Ugly routine
+int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint16_t size, uint16_t timeout);
 
 
 //! \} \}

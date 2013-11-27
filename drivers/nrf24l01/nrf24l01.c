@@ -524,7 +524,10 @@ int nrf24l01_send(struct nrf24l01 *device, uint8_t *data, uint16_t size)
                 return -ETIMEDOUT;
             }
             if (status_reg & NRF24L01_TX_DS)
+            {
+                nrf24l01_clear_irq(device, NRF24L01_TX_DS);
                 break;
+            }
 
             system_nop();
         }
@@ -541,7 +544,7 @@ int nrf24l01_send(struct nrf24l01 *device, uint8_t *data, uint16_t size)
  * \arg size - received data size.
  * \arg timeout - receive timeout. 0 - means wait forever
  */
-int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint8_t *size, uint16_t timeout)
+int nrf24l01_receive_packet(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint8_t *size, uint16_t timeout)
 {
     uint64_t tickStop = get_tick_count() + timeout;
     uint8_t status_reg;
@@ -551,11 +554,15 @@ int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint
     if (status)
         return status;
 
-    while ((timeout = 0) || (get_tick_count() < tickStop))
+
+    while ((timeout == 0) || (get_tick_count() < tickStop))
     {
         status = nrf24l01_get_fifo_status(device, &status_reg);
         if (status)
+        {
+            nrf24l01_enter_standby(device);
             return status;
+        }
 
         if (status_reg & NRF24L01_FIFO_RX_EMPTY)
         {
@@ -565,17 +572,91 @@ int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint
 
         status = nrf24l01_get_size(device, size);
         if (status)
+        {
+            nrf24l01_flush_rx(device);
+            nrf24l01_enter_standby(device);
             return status;
+        }
 
         status = nrf24l01_read_payload(device, *size, data, pipe);
         if (status)
+        {
+            nrf24l01_flush_rx(device);
+            nrf24l01_enter_standby(device);
             return status;
+        }
 
         break;
     }
 
-    if (get_tick_count() >= tickStop)
+    if ((timeout != 0) && (get_tick_count() >= tickStop))
+    {
+        nrf24l01_flush_rx(device);
+        nrf24l01_enter_standby(device);
         return -ETIMEDOUT;
+    }
+
+    return nrf24l01_enter_standby(device);
+}
+
+
+int nrf24l01_receive(struct nrf24l01 *device, uint8_t* pipe, uint8_t *data, uint16_t size, uint16_t timeout)
+{
+    uint64_t tickStop = get_tick_count() + timeout;
+    uint8_t status_reg;
+    int status;
+
+    status = nrf24l01_enter_rx(device);
+    if (status)
+        return status;
+
+    uint16_t recieved = 0;
+
+    while ((recieved < size) && ((timeout == 0) || (get_tick_count() < tickStop)))
+    {
+        status = nrf24l01_get_fifo_status(device, &status_reg);
+        if (status)
+        {
+            nrf24l01_enter_standby(device);
+            return status;
+        }
+
+        if (status_reg & NRF24L01_FIFO_RX_EMPTY)
+        {
+            system_nop();
+            continue;
+        }
+
+        uint8_t packetSize;
+
+        status = nrf24l01_get_size(device, &packetSize);
+        if (status)
+        {
+            nrf24l01_flush_rx(device);
+            nrf24l01_enter_standby(device);
+            return status;
+        }
+
+        if ((recieved + packetSize) > size)
+            packetSize = size - recieved;
+
+        status = nrf24l01_read_payload(device, packetSize, data + recieved, pipe);
+        if (status)
+        {
+            nrf24l01_flush_rx(device);
+            nrf24l01_enter_standby(device);
+            return status;
+        }
+
+        recieved += packetSize;
+    }
+
+    if ((timeout != 0) && (get_tick_count() >= tickStop))
+    {
+        nrf24l01_flush_rx(device);
+        nrf24l01_enter_standby(device);
+        return -ETIMEDOUT;
+    }
 
     return nrf24l01_enter_standby(device);
 }
