@@ -1,7 +1,13 @@
 #include <bm/delay.h>
 #include <limits.h>
-#include <stm32f10x.h>
-#include <stm32f10x_tim.h>
+
+#if defined STM32F1
+# include <stm32f10x.h>
+# include <stm32f10x_tim.h>
+#elif defined STM32F4
+# include <stm32f4xx.h>
+# include <stm32f4xx_tim.h>
+#endif
 
 void delay_us(uint16_t uS)
 {
